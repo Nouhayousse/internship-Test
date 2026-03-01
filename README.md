@@ -43,7 +43,7 @@ docker run --name reservation-pg \
 ### 3. Accéder à la documentation Swagger UI
 
 ```
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/reservations-api/swagger-ui/index.html
 ```
 
 Le schéma de base de données est créé automatiquement par **Flyway** au démarrage.
