@@ -225,6 +225,11 @@ La documentation complète et interactive est disponible sur Swagger UI au déma
 | `GET` | `/api/reservations/{id}` | Récupérer une réservation par ID |
 | `DELETE` | `/api/reservations/{id}` | Annuler une réservation (soft delete) |
 
+
+<img width="455" height="428" alt="image" src="https://github.com/user-attachments/assets/e40bdf6b-3894-4daa-b2a6-32dc878e4e62" />
+
+
+
 ### Codes HTTP retournés
 
 | Code | Signification |
