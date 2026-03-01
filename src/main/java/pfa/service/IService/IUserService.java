@@ -1,12 +1,15 @@
 package pfa.service.IService;
 
-import pfa.dto.request.CreateReservationRequest;
-import pfa.dto.response.ReservationResponse;
 
-public interface UserService {
+import pfa.dto.request.CreateUserRequest;
+import pfa.dto.response.UserResponse;
 
-    public ReservationResponse createReservation(CreateReservationRequest request);
-    public ReservationResponse cancelReservation(String reservationId);
+import java.util.UUID;
 
+public interface IUserService {
+
+
+    public UserResponse createUser(CreateUserRequest request);
+    public UserResponse getUserById(UUID id);
 
 }
