@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinTech PSP · Architecture Complète · Afrique du Nord</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Epilogue:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #050508;
+  --deep: #080810;
+  --surface: #0d0d18;
+  --raised: #111120;
+  --border: #1c1c32;
+  --border2: #252540;
+
+  --emerald: #00e887;
+  --emerald-dim: rgba(0,232,135,0.08);
+  --emerald-border: rgba(0,232,135,0.2);
+
+  --violet: #8b5cf6;
+  --violet-dim: rgba(139,92,246,0.08);
+  --violet-border: rgba(139,92,246,0.25);
+
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.08);
+  --amber-border: rgba(245,158,11,0.2);
+
+  --cyan: #06b6d4;
+  --cyan-dim: rgba(6,182,212,0.07);
+  --cyan-border: rgba(6,182,212,0.2);
+
+  --rose: #f43f5e;
+  --rose-dim: rgba(244,63,94,0.08);
+  --rose-border: rgba(244,63,94,0.2);
+
+  --indigo: #6366f1;
+
+  --text: #e8e4f0;
+  --text2: #8884a0;
+  --text3: #4a4860;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Epilogue', sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ══ HERO ══ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 70% at 0% 0%, rgba(139,92,246,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgba(0,232,135,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(6,182,212,0.04) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--violet-border);
+  background: var(--violet-dim);
+  color: #a78bfa;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+
+.pulse {
+  width: 6px; height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.4; transform:scale(0.8); }
+}
+
+.hero h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 .line2 {
+  display: block;
+  background: linear-gradient(90deg, var(--emerald), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h1 .line3 {
+  display: block;
+  color: var(--text2);
+  font-weight: 300;
+  font-size: 0.55em;
+  letter-spacing: 0.02em;
+  margin-top: 0.5rem;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--text2);
+  max-width: 680px;
+  margin-bottom: 3rem;
+  line-height: 1.8;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 4rem;
+}
+
+.htag {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  border: 1px solid;
+}
+.htag-e { background: var(--emerald-dim); color: var(--emerald); border-color: var(--emerald-border); }
+.htag-v { background: var(--violet-dim); color: #a78bfa; border-color: var(--violet-border); }
+.htag-a { background: var(--amber-dim); color: var(--amber); border-color: var(--amber-border); }
+.htag-c { background: var(--cyan-dim); color: var(--cyan); border-color: var(--cyan-border); }
+.htag-r { background: var(--rose-dim); color: var(--rose); border-color: var(--rose-border); }
+
+/* ══ DOMAIN MAP ══ */
+.domain-map {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.domain-cell {
+  background: var(--deep);
+  padding: 1.75rem;
+  transition: background 0.2s;
+}
+.domain-cell:hover { background: var(--surface); }
+
+.domain-cell .dc-icon { font-size: 1.8rem; margin-bottom: 0.75rem; display: block; }
+.domain-cell .dc-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.domain-cell .dc-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+
+/* ══ LAYOUT ══ */
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+section { padding: 5rem 0; }
+
+.section-eyebrow {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 20px; height: 1px;
+}
+
+.ey-e { color: var(--emerald); }
+.ey-e::before { background: var(--emerald); }
+.ey-v { color: #a78bfa; }
+.ey-v::before { background: #a78bfa; }
+.ey-a { color: var(--amber); }
+.ey-a::before { background: var(--amber); }
+.ey-c { color: var(--cyan); }
+.ey-c::before { background: var(--cyan); }
+.ey-r { color: var(--rose); }
+.ey-r::before { background: var(--rose); }
+.ey-i { color: var(--indigo); }
+.ey-i::before { background: var(--indigo); }
+
+h2.sh {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.sdesc {
+  color: var(--text2);
+  font-size: 0.92rem;
+  max-width: 680px;
+  margin-bottom: 3rem;
+}
+
+/* ══ SERVICE CARDS ══ */
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.svc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.2s;
+}
+
+.svc-card:hover { transform: translateY(-2px); }
+
+.svc-card.c-e { border-top: 2px solid var(--emerald); }
+.svc-card.c-v { border-top: 2px solid var(--violet); }
+.svc-card.c-a { border-top: 2px solid var(--amber); }
+.svc-card.c-c { border-top: 2px solid var(--cyan); }
+.svc-card.c-r { border-top: 2px solid var(--rose); }
+.svc-card.c-i { border-top: 2px solid var(--indigo); }
+
+.svc-card .svc-icon { font-size: 1.6rem; margin-bottom: 0.75rem; display: block; }
+
+.svc-card h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.svc-card .svc-desc { font-size: 0.82rem; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.65; }
+
+.tech-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tp {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  background: var(--raised);
+}
+
+.tp.hi { color: var(--emerald); border-color: var(--emerald-border); background: var(--emerald-dim); }
+.tp.hv { color: #a78bfa; border-color: var(--violet-border); background: var(--violet-dim); }
+.tp.ha { color: var(--amber); border-color: var(--amber-border); background: var(--amber-dim); }
+.tp.hc { color: var(--cyan); border-color: var(--cyan-border); background: var(--cyan-dim); }
+.tp.hr { color: var(--rose); border-color: var(--rose-border); background: var(--rose-dim); }
+
+/* ══ ARCH DIAGRAM ══ */
+.arch-layer {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.arch-layer-header {
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.arch-layer-header .lh-icon { font-size: 1rem; }
+
+.arch-layer-header .lh-name {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.arch-layer-header .lh-desc { font-size: 0.75rem; color: var(--text3); margin-left: auto; }
+
+.al-e .arch-layer-header { background: var(--emerald-dim); }
+.al-v .arch-layer-header { background: var(--violet-dim); }
+.al-a .arch-layer-header { background: var(--amber-dim); }
+.al-c .arch-layer-header { background: var(--cyan-dim); }
+.al-r .arch-layer-header { background: var(--rose-dim); }
+.al-i .arch-layer-header { background: rgba(99,102,241,0.07); }
+
+.arch-layer-body {
+  padding: 1.25rem 1.5rem;
+  background: var(--deep);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--raised);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.node .nd { font-size: 0.9rem; }
+
+/* ══ CODE ══ */
+.code {
+  background: #030307;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.78rem;
+  line-height: 1.9;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  position: relative;
+}
+
+.code .cf {
+  display: block;
+  color: var(--text3);
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.kw { color: #8b5cf6; }
+.str { color: #00e887; }
+.an { color: #f59e0b; }
+.cm { color: #2a2840; }
+.cl { color: #60a5fa; }
+.num { color: #f43f5e; }
+.fn { color: #06b6d4; }
+
+/* ══ BIG TABLE ══ */
+.btable-wrap {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.btable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.btable thead tr {
+  background: var(--surface);
+}
+
+.btable th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.btable td {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(28,28,50,0.6);
+  color: var(--text2);
+  vertical-align: top;
+}
+
+.btable tr:last-child td { border-bottom: none; }
+.btable tr:hover td { background: rgba(139,92,246,0.03); }
+.btable td:first-child { color: var(--text); font-weight: 500; }
+
+/* ══ FLOW ══ */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 2rem 0;
+}
+
+.fn-node {
+  background: var(--raised);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 0.75rem 1.1rem;
+  text-align: center;
+  min-width: 110px;
+}
+.fn-node .fn-i { font-size: 1.2rem; display: block; margin-bottom: 0.25rem; }
+.fn-node .fn-l { font-size: 0.7rem; font-weight: 600; font-family: 'Fira Code', monospace; }
+.fn-node .fn-s { font-size: 0.6rem; color: var(--text3); margin-top: 0.15rem; }
+
+.flow-arr {
+  color: var(--violet);
+  font-size: 1.1rem;
+  padding: 0 0.3rem;
+  flex-shrink: 0;
+}
+
+/* ══ CALLOUT ══ */
+.callout {
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.callout-e { background: var(--emerald-dim); border: 1px solid var(--emerald-border); color: #6effc0; }
+.callout-v { background: var(--violet-dim); border: 1px solid var(--violet-border); color: #c4b5fd; }
+.callout-a { background: var(--amber-dim); border: 1px solid var(--amber-border); color: #fcd34d; }
+.callout-r { background: var(--rose-dim); border: 1px solid var(--rose-border); color: #fda4af; }
+.callout-c { background: var(--cyan-dim); border: 1px solid var(--cyan-border); color: #67e8f9; }
+
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+/* ══ COMPLIANCE MATRIX ══ */
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.mx-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+}
+
+.mx-card .mx-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.mx-card h4 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.mx-card p { font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+
+/* ══ MONETIZATION ══ */
+.mono-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .mono-grid { grid-template-columns: 1fr; }
+  .domain-map { grid-template-columns: 1fr; }
+  .svc-grid { grid-template-columns: 1fr; }
+  .matrix { grid-template-columns: 1fr 1fr; }
+}
+
+.mono-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mono-card::after {
+  content: attr(data-n);
+  position: absolute;
+  bottom: -0.5rem;
+  right: 1rem;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  opacity: 0.03;
+  line-height: 1;
+}
+
+.mono-card .mc-icon { font-size: 2rem; display: block; margin-bottom: 1rem; }
+.mono-card h3 { font-family: 'Unbounded', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+.mono-card p { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+
+/* ══ TWO COL ══ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ══ DIVIDER ══ */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+/* ══ NAV ══ */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5,5,8,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-inner::-webkit-scrollbar { display: none; }
+
+.nav-item {
+  padding: 1rem 1.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.nav-item:hover { color: var(--text); border-color: var(--violet); }
+
+/* ══ FOOTER ══ */
+footer {
+  background: var(--deep);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.8rem;
+}
+
+footer strong { color: var(--emerald); }
+
+.two-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--raised);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 0.15rem 0.6rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+  color: var(--text2);
+  margin: 0.2rem;
+}
+
+.sep-line {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text3);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 2.5rem 0 1.75rem;
+}
+.sep-line::before,.sep-line::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-pill"><span class="pulse"></span> Architecture Technique · Niveau Production · PSP Afrique du Nord</div>
+    <h1>
+      FinTech Platform
+      <span class="line2">Merchant-First PSP</span>
+      <span class="line3">Stack complète · Microservices · Conformité · Monétisation</span>
+    </h1>
+    <p class="hero-sub">
+      Architecture technique exhaustive d'une plateforme de paiement PSP pour le marché Afrique du Nord —
+      acceptation QR/e-commerce, transferts compte-à-compte, cockpit marchand, moteur fraude/risque,
+      conformité réglementaire et monétisation transactionnelle.
+    </p>
+    <div class="hero-tags">
+      <span class="htag htag-e">Spring Boot Microservices</span>
+      <span class="htag htag-v">Event-Driven · Kafka</span>
+      <span class="htag htag-a">PCI-DSS Compliant</span>
+      <span class="htag htag-c">React · Next.js Cockpit</span>
+      <span class="htag htag-r">Fraud Engine · ML</span>
+      <span class="htag htag-e">PostgreSQL · Redis</span>
+      <span class="htag htag-v">API Gateway · OAuth2</span>
+      <span class="htag htag-a">Prometheus · Grafana · ELK</span>
+      <span class="htag htag-c">Kubernetes · Docker</span>
+    </div>
+
+    <!-- Domain Map -->
+    <div class="domain-map">
+      <div class="domain-cell">
+        <span class="dc-icon">💳</span>
+        <div class="dc-name" style="color:var(--emerald)">Payment Core</div>
+        <div class="dc-desc">Acceptation QR, e-commerce, transferts C2C, routage rails bancaires locaux</div>
+      </div>
+      <div class="domain-cell">
+        <span class="dc-icon">🏪</span>
+        <div class="dc-name" style="color:#a78bfa">Merchant Cockpit</div>
+        <div class="dc-desc">Rapprochement, reporting, facturation, exports, dashboard temps réel</div>
+      </div>
+      <div class="domain-cell">
+        <span class="dc-icon">🛡️</span>
+        <div class="dc-name" style="color:var(--amber)">Risk & Compliance</div>
+        <div class="dc-desc">Moteur fraude ML, KYB/KYC, AML screening, scoring temps réel</div>
+      </div>
+      <div class="domain-cell">
+        <span class="dc-icon">💰</span>
+        <div class="dc-name" style="color:var(--cyan)">Monetization</div>
+        <div class="dc-desc">Commission transactionnelle, abonnements marchands, facturation PSP</div>
+      </div>
+      <div class="domain-cell">
+        <span class="dc-icon">🔌</span>
+        <div class="dc-name" style="color:var(--rose)">API Platform</div>
+        <div class="dc-desc">API publique encaissement, paiements récurrents, webhooks, SDK</div>
+      </div>
+      <div class="domain-cell">
+        <span class="dc-icon">👁️</span>
+        <div class="dc-name" style="color:#6366f1">Observability</div>
+        <div class="dc-desc">Logging, monitoring, alerting, distributed tracing, audit trail</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#architecture" class="nav-item">Architecture</a>
+    <a href="#payment" class="nav-item">Payment Core</a>
+    <a href="#cockpit" class="nav-item">Cockpit Marchand</a>
+    <a href="#fraud" class="nav-item">Fraude & Risque</a>
+    <a href="#compliance" class="nav-item">Conformité</a>
+    <a href="#api" class="nav-item">API Platform</a>
+    <a href="#observability" class="nav-item">Observabilité</a>
+    <a href="#infra" class="nav-item">Infra & DevOps</a>
+    <a href="#monetization" class="nav-item">Monétisation</a>
+    <a href="#stack" class="nav-item">Stack Complète</a>
+  </div>
+</nav>
+
+<!-- ══ SECTION 1 : ARCHITECTURE GLOBALE ══ -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="section-eyebrow ey-v">01 · Architecture Globale</div>
+    <h2 class="sh">Pattern : Microservices Event-Driven<br>avec Bounded Contexts DDD</h2>
+    <p class="sdesc">
+      Une plateforme PSP de ce niveau ne peut pas être un monolithe. L'architecture est découpée en domaines métier indépendants (DDD Bounded Contexts), chaque service Spring Boot owning sa propre base de données, communicant via événements Kafka.
+    </p>
+
+    <!-- Architecture Layers -->
+    <div class="arch-layer al-e">
+      <div class="arch-layer-header">
+        <span class="lh-icon">🌍</span>
+        <span class="lh-name" style="color:var(--emerald)">Layer 1 · Client Layer</span>
+        <span class="lh-desc">Ce que voit l'utilisateur final</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">📱</span> App Mobile Marchand (React Native)</div>
+        <div class="node"><span class="nd">🖥️</span> Cockpit Web Marchand (Next.js)</div>
+        <div class="node"><span class="nd">🔌</span> SDK JS / iOS / Android</div>
+        <div class="node"><span class="nd">📟</span> Terminal POS (QR Display)</div>
+        <div class="node"><span class="nd">🛒</span> Plugin E-commerce (WooCommerce/PrestaShop)</div>
+        <div class="node"><span class="nd">🔧</span> Back-office Admin (React)</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-v">
+      <div class="arch-layer-header">
+        <span class="lh-icon">🚪</span>
+        <span class="lh-name" style="color:#a78bfa">Layer 2 · API Gateway & Security</span>
+        <span class="lh-desc">Point d'entrée unique — authentification, routing, rate limiting</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">🔐</span> API Gateway (Kong / Spring Cloud Gateway)</div>
+        <div class="node"><span class="nd">🏷️</span> Auth Server (Keycloak + OAuth2/OIDC)</div>
+        <div class="node"><span class="nd">⚡</span> Rate Limiter (Redis Token Bucket)</div>
+        <div class="node"><span class="nd">🔒</span> TLS Termination + mTLS inter-services</div>
+        <div class="node"><span class="nd">📋</span> API Versioning (v1, v2, ...)</div>
+        <div class="node"><span class="nd">🌐</span> CORS + WAF (Web Application Firewall)</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-a">
+      <div class="arch-layer-header">
+        <span class="lh-icon">⚙️</span>
+        <span class="lh-name" style="color:var(--amber)">Layer 3 · Core Microservices (Spring Boot)</span>
+        <span class="lh-desc">Le cœur métier — chaque service = un Bounded Context DDD</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">💳</span> Payment Service</div>
+        <div class="node"><span class="nd">🔗</span> Acquirer/Bank Connector</div>
+        <div class="node"><span class="nd">📊</span> Ledger Service</div>
+        <div class="node"><span class="nd">👤</span> Merchant Service</div>
+        <div class="node"><span class="nd">🛡️</span> Fraud Engine</div>
+        <div class="node"><span class="nd">📋</span> KYC/KYB Service</div>
+        <div class="node"><span class="nd">💰</span> Fee & Billing Service</div>
+        <div class="node"><span class="nd">📈</span> Reporting Service</div>
+        <div class="node"><span class="nd">🔔</span> Notification Service</div>
+        <div class="node"><span class="nd">🔌</span> Webhook Service</div>
+        <div class="node"><span class="nd">📝</span> Audit Service</div>
+        <div class="node"><span class="nd">🔁</span> Reconciliation Service</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-c">
+      <div class="arch-layer-header">
+        <span class="lh-icon">📨</span>
+        <span class="lh-name" style="color:var(--cyan)">Layer 4 · Messaging & Event Bus</span>
+        <span class="lh-desc">Communication asynchrone inter-services — Kafka comme épine dorsale</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">📨</span> Apache Kafka (Event Bus)</div>
+        <div class="node"><span class="nd">📋</span> Schema Registry (Avro)</div>
+        <div class="node"><span class="nd">🔄</span> Kafka Streams (Real-time processing)</div>
+        <div class="node"><span class="nd">🔃</span> Dead Letter Queue (DLQ)</div>
+        <div class="node"><span class="nd">⏰</span> Kafka Connect (CDC depuis PostgreSQL)</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-r">
+      <div class="arch-layer-header">
+        <span class="lh-icon">🗄️</span>
+        <span class="lh-name" style="color:var(--rose)">Layer 5 · Data Layer</span>
+        <span class="lh-desc">Chaque service possède sa propre base — pas de base partagée (Database per Service pattern)</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">🐘</span> PostgreSQL (transactions, ledger, marchands)</div>
+        <div class="node"><span class="nd">⚡</span> Redis (sessions, cache, rate limiting, idempotency)</div>
+        <div class="node"><span class="nd">🔍</span> Elasticsearch (logs, search, analytics)</div>
+        <div class="node"><span class="nd">📊</span> TimescaleDB (métriques time-series)</div>
+        <div class="node"><span class="nd">📦</span> MinIO / S3 (documents KYC, exports)</div>
+        <div class="node"><span class="nd">🔐</span> HashiCorp Vault (secrets, encryption keys)</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-i">
+      <div class="arch-layer-header">
+        <span class="lh-icon">🏦</span>
+        <span class="lh-name" style="color:var(--indigo)">Layer 6 · External Integrations</span>
+        <span class="lh-desc">Rails bancaires et partenaires locaux Afrique du Nord</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">🏛️</span> CMI / HPS (Maroc)</div>
+        <div class="node"><span class="nd">🏛️</span> SATIM / Algeria</div>
+        <div class="node"><span class="nd">🏛️</span> MonétiqueTunisie</div>
+        <div class="node"><span class="nd">💳</span> Visa / Mastercard Network</div>
+        <div class="node"><span class="nd">📱</span> Inwi Money / Orange Money</div>
+        <div class="node"><span class="nd">🔍</span> OFAC / World-Check (AML)</div>
+        <div class="node"><span class="nd">📧</span> SendGrid / AWS SES (Emails)</div>
+        <div class="node"><span class="nd">📟</span> Twilio (SMS OTP)</div>
+      </div>
+    </div>
+
+    <div class="callout callout-v" style="margin-top:2rem">
+      <span class="callout-icon">🏗️</span>
+      <div>
+        <strong>Principe clé — Database per Service :</strong> Chaque microservice Spring Boot possède exclusivement sa propre base de données. Payment Service → sa PostgreSQL. Fraud Engine → sa base ML. Merchant Service → sa PostgreSQL. Ils ne partagent jamais une base commune. La communication entre services passe UNIQUEMENT par les événements Kafka ou les APIs REST. C'est ce qui garantit l'indépendance de déploiement et la scalabilité.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 2 : PAYMENT CORE ══ -->
+<section id="payment">
+  <div class="wrap">
+    <div class="section-eyebrow ey-e">02 · Payment Core</div>
+    <h2 class="sh">Le Cœur des Paiements</h2>
+    <p class="sdesc">Le domaine le plus critique. Chaque transaction doit être atomique, idempotente, et tracée. Aucune perte de donnée tolérée.</p>
+
+    <!-- Payment Flow -->
+    <div class="sep-line">Flux QR Payment — Séquence complète</div>
+
+    <div class="flow-row">
+      <div class="fn-node"><span class="fn-i">📱</span><div class="fn-l">Client</div><div class="fn-s">Scan QR</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">🚪</span><div class="fn-l">API Gateway</div><div class="fn-s">Auth + Rate limit</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">🛡️</span><div class="fn-l">Fraud Check</div><div class="fn-s">Score < 0.3 ?</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">💳</span><div class="fn-l">Payment Svc</div><div class="fn-s">Initiation</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">🏦</span><div class="fn-l">Acquirer</div><div class="fn-s">CMI / SATIM</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">📋</span><div class="fn-l">Ledger</div><div class="fn-s">Double-entry</div></div>
+      <div class="flow-arr">→</div>
+      <div class="fn-node"><span class="fn-i">📨</span><div class="fn-l">Kafka Event</div><div class="fn-s">payment.completed</div></div>
+    </div>
+
+    <div class="svc-grid">
+      <div class="svc-card c-e">
+        <span class="svc-icon">💳</span>
+        <h3>Payment Service</h3>
+        <p class="svc-desc">Orchestrateur central. Gère le cycle de vie d'une transaction : initiation, autorisation, capture, annulation, remboursement. Garantit l'idempotence via Redis (même requestId = même résultat).</p>
+        <div class="tech-pills">
+          <span class="tp hi">Spring Boot</span>
+          <span class="tp hi">PostgreSQL</span>
+          <span class="tp hi">Redis Idempotency</span>
+          <span class="tp">Saga Pattern</span>
+          <span class="tp">State Machine</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-e">
+        <span class="svc-icon">🔗</span>
+        <h3>Acquirer Connector</h3>
+        <p class="svc-desc">Abstraction des rails bancaires locaux. Un adapter par partenaire (CMI Maroc, SATIM Algérie, MonétiqueTunisie). Gère les retries, timeouts, et la normalisation des codes de réponse ISO 8583.</p>
+        <div class="tech-pills">
+          <span class="tp hi">Adapter Pattern</span>
+          <span class="tp hi">ISO 8583</span>
+          <span class="tp hi">Resilience4j</span>
+          <span class="tp">Circuit Breaker</span>
+          <span class="tp">Retry + Backoff</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-e">
+        <span class="svc-icon">📋</span>
+        <h3>Ledger Service</h3>
+        <p class="svc-desc">Comptabilité en partie double (double-entry). Chaque transaction génère deux écritures comptables (débit/crédit). Source of truth financière. Immuable — aucune écriture ne peut être modifiée.</p>
+        <div class="tech-pills">
+          <span class="tp hi">Double-Entry Ledger</span>
+          <span class="tp hi">PostgreSQL</span>
+          <span class="tp">ACID Transactions</span>
+          <span class="tp">Append-only</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-e">
+        <span class="svc-icon">🔁</span>
+        <h3>Reconciliation Service</h3>
+        <p class="svc-desc">Compare les transactions internes avec les fichiers de règlement des banques partenaires (CMI settlement file, etc.) pour détecter les écarts. Tourne en batch la nuit via Spring Batch.</p>
+        <div class="tech-pills">
+          <span class="tp hi">Spring Batch</span>
+          <span class="tp hi">@Scheduled</span>
+          <span class="tp">CSV/XML Parser</span>
+          <span class="tp">Discrepancy Report</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-e">
+        <span class="svc-icon">📱</span>
+        <h3>QR Engine</h3>
+        <p class="svc-desc">Génération et validation de QR codes selon le standard EMVCo QR Code. Un QR statique par marchand (affiché en caisse) et QR dynamiques par transaction (montant intégré).</p>
+        <div class="tech-pills">
+          <span class="tp hi">EMVCo QR Standard</span>
+          <span class="tp hi">ZXing Library</span>
+          <span class="tp">Static + Dynamic QR</span>
+          <span class="tp">TTL Redis</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-e">
+        <span class="svc-icon">🔄</span>
+        <h3>Transfer Service (C2C)</h3>
+        <p class="svc-desc">Transferts compte-à-compte entre marchands ou vers wallets. Utilise le pattern Saga (Choreography) pour coordonner la déduction chez l'émetteur et le crédit chez le destinataire de façon atomique via Kafka.</p>
+        <div class="tech-pills">
+          <span class="tp hi">Saga Choreography</span>
+          <span class="tp hi">Kafka</span>
+          <span class="tp">Compensating TX</span>
+          <span class="tp">Outbox Pattern</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep-line">Pattern Saga — Transactions distribuées sans 2PC</div>
+
+    <div class="code">
+      <span class="cf">// PaymentSagaOrchestrator.java — Saga avec compensation en cas d'échec</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">PaymentSagaOrchestrator</span> {
+
+    <span class="cm">// Étape 1 : Vérification fraude</span>
+    <span class="cm">// Étape 2 : Réservation fonds (débit provisoire)</span>
+    <span class="cm">// Étape 3 : Appel acquéreur</span>
+    <span class="cm">// Étape 4 : Écriture ledger</span>
+    <span class="cm">// Si Étape 3 échoue → compensation : libérer les fonds réservés</span>
+
+    <span class="kw">public</span> <span class="cl">PaymentResult</span> <span class="fn">execute</span>(<span class="cl">PaymentCommand</span> cmd) {
+        <span class="kw">var</span> sagaId = UUID.randomUUID().toString();
+
+        <span class="kw">try</span> {
+            fraudEngine.check(cmd);                          <span class="cm">// Step 1</span>
+            ledgerService.reserve(cmd.amount(), sagaId);    <span class="cm">// Step 2</span>
+            <span class="kw">var</span> acquirerResponse = acquirerConnector.authorize(cmd); <span class="cm">// Step 3</span>
+            ledgerService.commit(sagaId, acquirerResponse); <span class="cm">// Step 4</span>
+
+            eventPublisher.publish(<span class="kw">new</span> <span class="cl">PaymentCompletedEvent</span>(sagaId, cmd));
+            <span class="kw">return</span> <span class="cl">PaymentResult</span>.success(acquirerResponse.authCode());
+
+        } <span class="kw">catch</span> (<span class="cl">AcquirerException</span> e) {
+            ledgerService.rollback(sagaId); <span class="cm">// Compensation automatique</span>
+            eventPublisher.publish(<span class="kw">new</span> <span class="cl">PaymentFailedEvent</span>(sagaId, e.code()));
+            <span class="kw">throw</span> e;
+        }
+    }
+}
+    </div>
+
+    <div class="callout callout-a">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>Idempotence — Critique en FinTech :</strong> Si un client clique deux fois "Payer" ou si un réseau relance la requête, la même transaction ne doit être exécutée qu'une seule fois. La solution : chaque requête de paiement transporte un <code>idempotencyKey</code> unique. Spring Boot stocke ce key dans Redis (TTL 24h). Si la key existe déjà → retourner le résultat existant sans re-exécuter.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 3 : COCKPIT MARCHAND ══ -->
+<section id="cockpit">
+  <div class="wrap">
+    <div class="section-eyebrow ey-v">03 · Merchant Cockpit</div>
+    <h2 class="sh">Cockpit Marchand<br>Rapprochement · Reporting · Facturation</h2>
+    <p class="sdesc">L'interface que le marchand utilise quotidiennement. Doit être temps réel, fiable, et exportable. C'est ici que se construit la confiance.</p>
+
+    <div class="svc-grid">
+      <div class="svc-card c-v">
+        <span class="svc-icon">📊</span>
+        <h3>Reporting Service</h3>
+        <p class="svc-desc">Agrège les transactions pour produire des rapports marchands : chiffre d'affaires par période, taux de succès, distribution par canal (QR/online), top produits. Requêtes optimisées sur TimescaleDB (time-series).</p>
+        <div class="tech-pills">
+          <span class="tp hv">Spring Boot</span>
+          <span class="tp hv">TimescaleDB</span>
+          <span class="tp">JasperReports</span>
+          <span class="tp">Apache POI (Excel)</span>
+          <span class="tp">iText (PDF)</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-v">
+        <span class="svc-icon">📑</span>
+        <h3>Invoicing Service</h3>
+        <p class="svc-desc">Génération automatique des factures marchands (commissions prélevées, frais d'abonnement). Cycle mensuel via Spring Batch. PDF envoyé par email + disponible dans le cockpit. Intégration comptable possible.</p>
+        <div class="tech-pills">
+          <span class="tp hv">Spring Batch</span>
+          <span class="tp hv">Thymeleaf Templates</span>
+          <span class="tp">@Scheduled</span>
+          <span class="tp">MinIO (PDF storage)</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-v">
+        <span class="svc-icon">🔁</span>
+        <h3>Reconciliation Dashboard</h3>
+        <p class="svc-desc">Interface de rapprochement : liste des transactions attendues vs reçues depuis les banques partenaires. Écarts surlignés, export CSV/Excel pour le comptable du marchand. Validation manuelle des anomalies.</p>
+        <div class="tech-pills">
+          <span class="tp hv">React + TanStack Table</span>
+          <span class="tp hv">Recharts</span>
+          <span class="tp">Excel export</span>
+          <span class="tp">Filtres avancés</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-v">
+        <span class="svc-icon">⚡</span>
+        <h3>Real-time Dashboard</h3>
+        <p class="svc-desc">Transactions en direct via WebSocket. Volume du jour, taux de succès, moyenne transaction, alertes si anomalie. Le marchand voit sa caisse en temps réel depuis son téléphone ou son PC.</p>
+        <div class="tech-pills">
+          <span class="tp hv">Spring WebSocket</span>
+          <span class="tp hv">STOMP Protocol</span>
+          <span class="tp">Server-Sent Events</span>
+          <span class="tp">Redis Pub/Sub</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-v">
+        <span class="svc-icon">📤</span>
+        <h3>Export Engine</h3>
+        <p class="svc-desc">Exports à la demande ou planifiés : CSV, Excel, PDF. Pour les gros volumes (100k+ lignes) : export asynchrone via Kafka, notification email quand prêt, téléchargement depuis MinIO.</p>
+        <div class="tech-pills">
+          <span class="tp hv">Apache POI</span>
+          <span class="tp hv">OpenCSV</span>
+          <span class="tp">Kafka async</span>
+          <span class="tp">MinIO signed URL</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-v">
+        <span class="svc-icon">🔔</span>
+        <h3>Notification Service</h3>
+        <p class="svc-desc">Notifications marchands : paiement reçu (SMS + push), seuil atteint, rapport mensuel dispo, anomalie détectée. Templates multilingues (FR/AR). Canaux : Email (SendGrid), SMS (Twilio), Push (Firebase).</p>
+        <div class="tech-pills">
+          <span class="tp hv">Spring Mail</span>
+          <span class="tp hv">Twilio SDK</span>
+          <span class="tp">FCM Push</span>
+          <span class="tp">Thymeleaf</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep-line">Stack Frontend Cockpit Marchand</div>
+
+    <div class="two-col">
+      <div>
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:1rem">Technologies Frontend</p>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">Next.js 14</span> <span style="color:var(--text2)">Framework React — SSR pour SEO, App Router</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">TypeScript</span> <span style="color:var(--text2)">Typage fort — indispensable en FinTech</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">TanStack Query</span> <span style="color:var(--text2)">Data fetching, caching, pagination</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">Recharts / Tremor</span> <span style="color:var(--text2)">Graphiques transactions, volumes</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">Zustand</span> <span style="color:var(--text2)">State management léger</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">i18next</span> <span style="color:var(--text2)">Internationalisation FR/AR/EN</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.83rem">
+            <span class="tp hv">Tailwind CSS</span> <span style="color:var(--text2)">Styling responsive</span>
+          </div>
+        </div>
+      </div>
+      <div class="code" style="margin:0">
+        <span class="cf">// useMerchantDashboard.ts — Data fetching temps réel</span>
+<span class="kw">const</span> <span class="fn">useMerchantDashboard</span> = (merchantId: <span class="cl">string</span>) => {
+
+  <span class="cm">// Données REST avec polling 30s</span>
+  <span class="kw">const</span> { data: stats } = useQuery({
+    queryKey: [<span class="str">'dashboard'</span>, merchantId],
+    queryFn: () => api.getDashboardStats(merchantId),
+    refetchInterval: <span class="num">30000</span>,
+  });
+
+  <span class="cm">// Transactions en temps réel via WebSocket</span>
+  <span class="kw">const</span> [liveTransactions, setLive] = useState([]);
+  useEffect(() => {
+    <span class="kw">const</span> ws = <span class="kw">new</span> <span class="cl">WebSocket</span>(`ws://api/merchants/${merchantId}/live`);
+    ws.onmessage = (e) => setLive(prev => [JSON.parse(e.data), ...prev].slice(<span class="num">0</span>,<span class="num">50</span>));
+    <span class="kw">return</span> () => ws.close();
+  }, [merchantId]);
+
+  <span class="kw">return</span> { stats, liveTransactions };
+};
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 4 : FRAUD ENGINE ══ -->
+<section id="fraud">
+  <div class="wrap">
+    <div class="section-eyebrow ey-a">04 · Moteur Fraude & Risque</div>
+    <h2 class="sh">Fraud Engine — Scoring Temps Réel</h2>
+    <p class="sdesc">Chaque transaction est scorée en moins de 150ms avant d'être autorisée. Un score trop élevé déclenche un blocage ou une friction supplémentaire (OTP SMS).</p>
+
+    <div class="svc-grid">
+      <div class="svc-card c-a">
+        <span class="svc-icon">🧠</span>
+        <h3>Rule Engine</h3>
+        <p class="svc-desc">Règles métier configurables en temps réel sans redéploiement : montant max par jour, pays bloqués, vélocité (N transactions en M minutes), heure suspecte, terminal inconnu. Stockées en base + cache Redis.</p>
+        <div class="tech-pills">
+          <span class="tp ha">Drools / Easy Rules</span>
+          <span class="tp ha">Redis Cache</span>
+          <span class="tp">Hot-reload rules</span>
+          <span class="tp">Admin UI config</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-a">
+        <span class="svc-icon">🤖</span>
+        <h3>ML Scoring Model</h3>
+        <p class="svc-desc">Modèle ML (XGBoost ou Random Forest) entraîné sur l'historique transactions. Score 0.0 → 1.0. Features : montant, heure, fréquence, géolocalisation, device fingerprint, historique marchand. Servi via API REST Python.</p>
+        <div class="tech-pills">
+          <span class="tp ha">Python Flask/FastAPI</span>
+          <span class="tp ha">scikit-learn / XGBoost</span>
+          <span class="tp">Feature Store</span>
+          <span class="tp">Model versioning</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-a">
+        <span class="svc-icon">⚡</span>
+        <h3>Velocity Check</h3>
+        <p class="svc-desc">Détecte les patterns de fraude par vélocité : trop de transactions en peu de temps, même montant répété, même terminal avec cartes différentes. Implémenté avec compteurs Redis TTL (sliding window).</p>
+        <div class="tech-pills">
+          <span class="tp ha">Redis Sliding Window</span>
+          <span class="tp ha">Lua Scripts Redis</span>
+          <span class="tp">Kafka Streams</span>
+          <span class="tp">Real-time counters</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-a">
+        <span class="svc-icon">🗺️</span>
+        <h3>Device & Geo Intelligence</h3>
+        <p class="svc-desc">Analyse du device fingerprint, adresse IP, géolocalisation. Détecte les VPN/Tor, les IP blacklistées, les changements de pays impossibles en peu de temps (impossible travel). Base GeoIP MaxMind.</p>
+        <div class="tech-pills">
+          <span class="tp ha">MaxMind GeoIP2</span>
+          <span class="tp ha">Device Fingerprinting</span>
+          <span class="tp">IP Reputation</span>
+          <span class="tp">Tor/VPN detection</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code" style="margin-top:2rem">
+      <span class="cf">// FraudScoringService.java — Pipeline de scoring &lt;150ms</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">FraudScoringService</span> {
+
+    <span class="kw">public</span> <span class="cl">FraudScore</span> <span class="fn">score</span>(<span class="cl">PaymentContext</span> ctx) {
+        <span class="kw">var</span> signals = CompletableFuture.allOf(
+
+            <span class="cm">// Parallélisation pour tenir &lt;150ms</span>
+            CompletableFuture.supplyAsync(() -> ruleEngine.evaluate(ctx)),       <span class="cm">// ~20ms</span>
+            CompletableFuture.supplyAsync(() -> velocityCheck.check(ctx)),       <span class="cm">// ~15ms (Redis)</span>
+            CompletableFuture.supplyAsync(() -> mlModel.predict(ctx)),           <span class="cm">// ~80ms (HTTP FastAPI)</span>
+            CompletableFuture.supplyAsync(() -> geoIntelligence.analyze(ctx))    <span class="cm">// ~30ms</span>
+
+        ).thenApply(v -> <span class="kw">new</span> <span class="cl">SignalAggregator</span>().combine(
+            ruleScore, velocityScore, mlScore, geoScore
+        ));
+
+        <span class="kw">double</span> finalScore = signals.join().getWeightedScore();
+
+        <span class="kw">return</span> <span class="kw">switch</span> (finalScore) {
+            <span class="kw">case</span> d <span class="kw">when</span> d < <span class="num">0.3</span> -> <span class="cl">FraudScore</span>.ALLOW;
+            <span class="kw">case</span> d <span class="kw">when</span> d < <span class="num">0.7</span> -> <span class="cl">FraudScore</span>.CHALLENGE; <span class="cm">// → OTP SMS</span>
+            <span class="kw">default</span>             -> <span class="cl">FraudScore</span>.BLOCK;
+        };
+    }
+}
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 5 : COMPLIANCE ══ -->
+<section id="compliance">
+  <div class="wrap">
+    <div class="section-eyebrow ey-r">05 · Conformité Réglementaire</div>
+    <h2 class="sh">KYC · KYB · AML · PCI-DSS</h2>
+    <p class="sdesc">Une plateforme PSP en Afrique du Nord doit se conformer aux régulations locales (Bank Al-Maghrib, Banque d'Algérie, BCT) et aux standards internationaux.</p>
+
+    <div class="matrix">
+      <div class="mx-card">
+        <div class="mx-num" style="color:var(--rose)">KYC</div>
+        <h4>Know Your Customer</h4>
+        <p>Vérification identité utilisateur final. CNI/Passeport scan + vérification OCR, selfie liveness check, score de confiance. Intégration API d'identité nationale si disponible.</p>
+      </div>
+      <div class="mx-card">
+        <div class="mx-num" style="color:var(--amber)">KYB</div>
+        <h4>Know Your Business</h4>
+        <p>Onboarding marchand : RC, IF, ICE (Maroc), documents légaux. Vérification statut entreprise, bénéficiaires effectifs (UBO), screening OFAC/World-Check.</p>
+      </div>
+      <div class="mx-card">
+        <div class="mx-num" style="color:var(--violet)">AML</div>
+        <h4>Anti-Money Laundering</h4>
+        <p>Screening continu transactions contre listes sanctions internationales (OFAC, EU, ONU). Détection patterns blanchiment (structuring, layering). Rapport GAFI si dépassement seuils.</p>
+      </div>
+      <div class="mx-card">
+        <div class="mx-num" style="color:var(--emerald)">PCI</div>
+        <h4>PCI-DSS Level 1</h4>
+        <p>Si traitement données cartes : chiffrement AES-256 au repos, TLS 1.3 en transit, tokenisation via Vault, audit logs immuables, tests de pénétration annuels, segmentation réseau.</p>
+      </div>
+      <div class="mx-card">
+        <div class="mx-num" style="color:var(--cyan)">RGPD</div>
+        <h4>Protection Données</h4>
+        <p>Droit à l'oubli, minimisation données, consentement explicite, chiffrement données personnelles, audit trail accès, notification breach dans les 72h.</p>
+      </div>
+      <div class="mx-card">
+        <div class="mx-num" style="color:#6366f1">PSP</div>
+        <h4>Agrément Régulateur</h4>
+        <p>Bank Al-Maghrib (Maroc), Banque d'Algérie, BCT (Tunisie). Rapports réglementaires périodiques, limites transactions, reporting BAM en temps réel au-delà des seuils.</p>
+      </div>
+    </div>
+
+    <div class="code" style="margin-top:2rem">
+      <span class="cf">// AuditService.java — Audit trail immuable pour compliance PCI-DSS</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">AuditService</span> {
+
+    <span class="cm">// Chaque action sensible génère une entrée immuable</span>
+    <span class="cm">// Stockée dans une table PostgreSQL append-only (pas d'UPDATE/DELETE autorisés)</span>
+    <span class="cm">// + envoyée vers Elasticsearch pour recherche compliance</span>
+
+    <span class="kw">public void</span> <span class="fn">record</span>(<span class="cl">AuditEvent</span> event) {
+        <span class="kw">var</span> entry = <span class="cl">AuditEntry</span>.builder()
+            .eventId(UUID.randomUUID())
+            .timestamp(<span class="cl">Instant</span>.now())
+            .actorId(event.actorId())         <span class="cm">// Qui a fait l'action</span>
+            .actorType(event.actorType())     <span class="cm">// MERCHANT / ADMIN / SYSTEM</span>
+            .action(event.action())           <span class="cm">// LOGIN / VIEW_TRANSACTION / EXPORT_DATA</span>
+            .resourceId(event.resourceId())   <span class="cm">// Sur quelle ressource</span>
+            .ipAddress(event.ip())
+            .userAgent(event.userAgent())
+            .result(event.result())           <span class="cm">// SUCCESS / FAILURE</span>
+            .checksum(computeHmac(event))     <span class="cm">// Intégrité cryptographique</span>
+            .build();
+
+        auditRepository.save(entry);           <span class="cm">// PostgreSQL append-only</span>
+        elasticsearchClient.index(entry);      <span class="cm">// Elasticsearch pour search compliance</span>
+    }
+}
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 6 : API PLATFORM ══ -->
+<section id="api">
+  <div class="wrap">
+    <div class="section-eyebrow ey-c">06 · API Platform</div>
+    <h2 class="sh">API Publique PSP — Encaissement,<br>Récurrents & Webhooks</h2>
+    <p class="sdesc">La plateforme s'étend via une API REST publique documentée OpenAPI, permettant à des tiers (e-commerce, ERP) d'intégrer les paiements.</p>
+
+    <div class="svc-grid">
+      <div class="svc-card c-c">
+        <span class="svc-icon">🔑</span>
+        <h3>Developer Portal</h3>
+        <p class="svc-desc">Portail self-service pour les développeurs partenaires. Génération de clés API, sandbox avec données fictives, documentation interactive OpenAPI/Swagger, guides d'intégration, logs de requêtes en temps réel.</p>
+        <div class="tech-pills">
+          <span class="tp hc">Next.js</span>
+          <span class="tp hc">Swagger UI</span>
+          <span class="tp">Stoplight / Redoc</span>
+          <span class="tp">Sandbox env</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-c">
+        <span class="svc-icon">🔔</span>
+        <h3>Webhook Service</h3>
+        <p class="svc-desc">Notifications HTTP vers les serveurs des marchands/partenaires : paiement reçu, remboursement, KYC validé. Retry automatique avec backoff exponentiel. Signature HMAC-SHA256 pour authentifier l'émetteur.</p>
+        <div class="tech-pills">
+          <span class="tp hc">Kafka consumer</span>
+          <span class="tp hc">HMAC-SHA256</span>
+          <span class="tp">Retry + Backoff</span>
+          <span class="tp">Webhook logs UI</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-c">
+        <span class="svc-icon">🔁</span>
+        <h3>Recurring Payments</h3>
+        <p class="svc-desc">Paiements récurrents pour abonnements (SaaS, utilities). Tokenisation du moyen de paiement (pas de stockage données cartes), déclenchement automatique via scheduler, gestion des échecs et dunning (relances).</p>
+        <div class="tech-pills">
+          <span class="tp hc">Tokenisation</span>
+          <span class="tp hc">Spring Scheduler</span>
+          <span class="tp">Dunning logic</span>
+          <span class="tp">Vault (token store)</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-c">
+        <span class="svc-icon">🌐</span>
+        <h3>Payment Links & Pages</h3>
+        <p class="svc-desc">URL de paiement générée en 1 appel API. Le marchand envoie le lien par SMS/WhatsApp, le client paie sur une page hébergée par la plateforme sans code à intégrer. Idéal pour PME sans site e-commerce.</p>
+        <div class="tech-pills">
+          <span class="tp hc">Unique token URL</span>
+          <span class="tp hc">TTL Redis</span>
+          <span class="tp">Hosted Payment Page</span>
+          <span class="tp">QR code intégré</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code" style="margin-top:2rem">
+      <span class="cf">// WebhookDeliveryService.java — Livraison fiable avec retry</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">WebhookDeliveryService</span> {
+
+    <span class="an">@Retryable</span>(maxAttempts = <span class="num">5</span>,
+               backoff = <span class="an">@Backoff</span>(delay = <span class="num">1000</span>, multiplier = <span class="num">2.0</span>))
+    <span class="kw">public void</span> <span class="fn">deliver</span>(<span class="cl">WebhookEvent</span> event, <span class="cl">Merchant</span> merchant) {
+        <span class="kw">var</span> payload = objectMapper.writeValueAsString(event);
+        <span class="kw">var</span> signature = hmacSha256(payload, merchant.getWebhookSecret());
+
+        <span class="kw">var</span> response = httpClient.post(merchant.getWebhookUrl())
+            .header(<span class="str">"X-Signature"</span>, <span class="str">"sha256="</span> + signature)
+            .header(<span class="str">"X-Event-Type"</span>, event.type())
+            .body(payload)
+            .execute();
+
+        <span class="kw">if</span> (!response.is2xxSuccessful()) {
+            <span class="kw">throw new</span> <span class="cl">WebhookDeliveryException</span>(<span class="str">"HTTP "</span> + response.statusCode());
+        }
+
+        webhookLogRepository.save(
+            <span class="cl">WebhookLog</span>.success(event.id(), response.statusCode(), Instant.now())
+        );
+    }
+
+    <span class="an">@Recover</span>
+    <span class="kw">public void</span> <span class="fn">onMaxRetryExceeded</span>(<span class="cl">WebhookDeliveryException</span> ex, <span class="cl">WebhookEvent</span> event) {
+        webhookLogRepository.save(<span class="cl">WebhookLog</span>.failed(event.id(), ex.getMessage()));
+        alertingService.notifyMerchantWebhookFailure(event);
+    }
+}
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 7 : OBSERVABILITY ══ -->
+<section id="observability">
+  <div class="wrap">
+    <div class="section-eyebrow ey-i">07 · Observabilité</div>
+    <h2 class="sh">Logging · Monitoring · Tracing<br>Spécifique FinTech</h2>
+    <p class="sdesc">Une plateforme de paiement doit avoir une observabilité de niveau bancaire. Toute anomalie détectée en moins de 2 minutes. Audit trail complet pour compliance.</p>
+
+    <div class="svc-grid">
+      <div class="svc-card c-i" style="border-top-color:var(--indigo)">
+        <span class="svc-icon">📝</span>
+        <h3>Structured Logging</h3>
+        <p class="svc-desc">Tous les logs en JSON structuré avec : traceId, merchantId, transactionId, userId, amount, currency, channel. Centralisés dans Elasticsearch via Logstash. Rétention 90j (compliance PCI).</p>
+        <div class="tech-pills">
+          <span class="tp">SLF4J + Logback</span>
+          <span class="tp">Logstash Encoder</span>
+          <span class="tp">MDC propagation</span>
+          <span class="tp">ELK Stack</span>
+          <span class="tp">90d retention</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-i" style="border-top-color:var(--indigo)">
+        <span class="svc-icon">📊</span>
+        <h3>Business Metrics</h3>
+        <p class="svc-desc">Métriques FinTech critiques : TPM (transactions/minute), taux succès/échec par acquéreur, latence p50/p95/p99 par endpoint, taux fraude détectée, volume en MAD/DZD/TND, SLA uptime.</p>
+        <div class="tech-pills">
+          <span class="tp">Micrometer</span>
+          <span class="tp">Prometheus</span>
+          <span class="tp">Grafana Dashboards</span>
+          <span class="tp">AlertManager</span>
+          <span class="tp">PagerDuty</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-i" style="border-top-color:var(--indigo)">
+        <span class="svc-icon">🕸️</span>
+        <h3>Distributed Tracing</h3>
+        <p class="svc-desc">Chaque paiement génère un traceId propagé à travers tous les microservices. Visualisation flame chart dans Jaeger. Permet d'identifier quel service est le goulot d'étranglement en &lt;5 minutes.</p>
+        <div class="tech-pills">
+          <span class="tp">OpenTelemetry</span>
+          <span class="tp">Jaeger</span>
+          <span class="tp">W3C TraceContext</span>
+          <span class="tp">Baggage propagation</span>
+        </div>
+      </div>
+
+      <div class="svc-card c-i" style="border-top-color:var(--indigo)">
+        <span class="svc-icon">🚨</span>
+        <h3>Alerting Critique</h3>
+        <p class="svc-desc">Alertes PagerDuty/Slack en &lt;2 minutes si : taux erreurs acquéreur > 5%, latence payment p99 > 3s, fraud rate > 2%, service down, saturation DB connections, certificats TLS expirent dans 30j.</p>
+        <div class="tech-pills">
+          <span class="tp">Grafana Alerting</span>
+          <span class="tp">AlertManager</span>
+          <span class="tp">PagerDuty</span>
+          <span class="tp">Slack webhook</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-e" style="margin-top:2rem">
+      <span class="callout-icon">🎯</span>
+      <div>
+        <strong>SLOs FinTech à monitorer via Grafana :</strong>
+        Disponibilité ≥ 99.9% (max 8.7h downtime/an) · Latence initiation paiement p95 ≤ 500ms · Latence scoring fraude ≤ 150ms · Taux succès transactions ≥ 97% · MTTR (Mean Time to Recovery) ≤ 15min · Zéro perte de données financières.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 8 : INFRA ══ -->
+<section id="infra">
+  <div class="wrap">
+    <div class="section-eyebrow ey-e">08 · Infrastructure & DevOps</div>
+    <h2 class="sh">Kubernetes · CI/CD · Sécurité Infra</h2>
+    <p class="sdesc">Une infra cloud-native avec déploiements zero-downtime, secrets management, et isolation réseau stricte.</p>
+
+    <div class="arch-layer al-v">
+      <div class="arch-layer-header">
+        <span class="lh-icon">☸️</span>
+        <span class="lh-name" style="color:#a78bfa">Kubernetes Cluster</span>
+        <span class="lh-desc">Orchestration containers — scalabilité automatique</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">🎯</span> Deployments (1 par microservice)</div>
+        <div class="node"><span class="nd">📊</span> HPA (auto-scaling selon TPM)</div>
+        <div class="node"><span class="nd">🌐</span> Ingress Nginx</div>
+        <div class="node"><span class="nd">🔒</span> Network Policies</div>
+        <div class="node"><span class="nd">🔑</span> Sealed Secrets / Vault</div>
+        <div class="node"><span class="nd">📋</span> ConfigMaps</div>
+        <div class="node"><span class="nd">💾</span> Persistent Volumes</div>
+        <div class="node"><span class="nd">🏷️</span> Namespaces (prod/staging)</div>
+      </div>
+    </div>
+
+    <div class="arch-layer al-e" style="margin-top:1rem">
+      <div class="arch-layer-header">
+        <span class="lh-icon">🔄</span>
+        <span class="lh-name" style="color:var(--emerald)">CI/CD Pipeline</span>
+        <span class="lh-desc">GitHub Actions → Docker Build → K8s Deploy — zero downtime</span>
+      </div>
+      <div class="arch-layer-body">
+        <div class="node"><span class="nd">📤</span> Git Push → GitHub Actions</div>
+        <div class="node"><span class="nd">🧪</span> Unit + Integration Tests</div>
+        <div class="node"><span class="nd">🔍</span> SonarQube (code quality)</div>
+        <div class="node"><span class="nd">🐋</span> Docker Build + Push (ECR/GCR)</div>
+        <div class="node"><span class="nd">🔒</span> Trivy (image vulnerability scan)</div>
+        <div class="node"><span class="nd">📦</span> Helm Chart Deploy</div>
+        <div class="node"><span class="nd">✅</span> Smoke Tests post-deploy</div>
+        <div class="node"><span class="nd">🔙</span> Auto-rollback si échec</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:2rem">
+      <div class="code" style="margin:0">
+        <span class="cf">// Dockerfile optimisé Spring Boot (multi-stage)</span>
+<span class="cm"># Stage 1 : Build</span>
+FROM maven:3.9-eclipse-temurin-21 <span class="kw">AS</span> builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline <span class="cm"># Cache layer</span>
+COPY src ./src
+RUN mvn package -DskipTests
+
+<span class="cm"># Stage 2 : Runtime (image minimale)</span>
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+<span class="cm"># User non-root pour sécurité PCI</span>
+RUN addgroup -S appgroup <span class="kw">&amp;&amp;</span> adduser -S appuser -G appgroup
+USER appuser
+COPY --from=builder /app/target/app.jar app.jar
+EXPOSE 8080
+ENTRYPOINT [<span class="str">"java"</span>, <span class="str">"-jar"</span>, <span class="str">"/app/app.jar"</span>]
+      </div>
+      <div class="code" style="margin:0">
+        <span class="cf">// k8s/deployment.yaml — HPA + Resource Limits</span>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 3  <span class="cm"># Minimum 3 pour HA</span>
+  strategy:
+    type: RollingUpdate  <span class="cm"># Zero-downtime deploy</span>
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    spec:
+      containers:
+      - name: payment-service
+        image: myregistry/payment-service:v2.1
+        resources:
+          requests:
+            memory: <span class="str">"512Mi"</span>
+            cpu: <span class="str">"250m"</span>
+          limits:
+            memory: <span class="str">"1Gi"</span>
+            cpu: <span class="str">"1000m"</span>
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 9 : MONETISATION ══ -->
+<section id="monetization">
+  <div class="wrap">
+    <div class="section-eyebrow ey-c">09 · Monétisation</div>
+    <h2 class="sh">Moteur de Facturation PSP</h2>
+    <p class="sdesc">Chaque transaction génère une commission. Chaque marchand paie un abonnement. Le moteur de facturation doit être exact au centime et auditable.</p>
+
+    <div class="mono-grid">
+      <div class="mono-card" data-n="1">
+        <span class="mc-icon">💸</span>
+        <h3 style="color:var(--emerald)">Commission Transactionnelle</h3>
+        <p>Pourcentage + fixe par transaction réussie. Exemple : 1.5% + 2 MAD. Calculé en temps réel lors du paiement, enregistré dans le Ledger comme écriture de commission. Settlement hebdomadaire vers compte PSP.</p>
+      </div>
+      <div class="mono-card" data-n="2">
+        <span class="mc-icon">📦</span>
+        <h3 style="color:#a78bfa">Abonnements Marchands</h3>
+        <p>Plans mensuels/annuels : Starter / Growth / Enterprise. Facturation automatique via le Billing Service le 1er du mois. Paiement par prélèvement du solde marchand ou carte.</p>
+      </div>
+      <div class="mono-card" data-n="3">
+        <span class="mc-icon">🔌</span>
+        <h3 style="color:var(--amber)">API Usage Billing</h3>
+        <p>Facturation à l'usage pour les intégrateurs API : par requête au-delà d'un quota inclus, par webhook livré, par rapport généré. Compteurs Redis incrémentés à chaque appel.</p>
+      </div>
+    </div>
+
+    <div class="code" style="margin-top:2rem">
+      <span class="cf">// FeeCalculationService.java — Calcul commission en temps réel</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">FeeCalculationService</span> {
+
+    <span class="kw">public</span> <span class="cl">FeeResult</span> <span class="fn">calculate</span>(<span class="cl">Transaction</span> tx, <span class="cl">MerchantPlan</span> plan) {
+        <span class="cm">// Commission = (montant * taux%) + fixe</span>
+        <span class="cm">// Taux dépend du plan marchand et du canal (QR = moins cher que carte)</span>
+
+        <span class="kw">var</span> rate = plan.getRateFor(tx.channel(), tx.cardBrand());
+        <span class="kw">var</span> percentageFee = tx.amount().multiply(rate.getPercentage());
+        <span class="kw">var</span> fixedFee = rate.getFixedAmount();
+        <span class="kw">var</span> totalFee = percentageFee.add(fixedFee);
+
+        <span class="cm">// Plafond si configuré</span>
+        <span class="kw">if</span> (plan.hasFeeCapFor(tx.channel())) {
+            totalFee = totalFee.min(plan.getFeeCap(tx.channel()));
+        }
+
+        <span class="cm">// Écriture comptable : débit compte marchand, crédit compte PSP</span>
+        ledgerService.bookFee(<span class="cl">LedgerEntry</span>.builder()
+            .debit(tx.merchantAccountId(), totalFee)
+            .credit(pspRevenueAccount, totalFee)
+            .reference(tx.id())
+            .build());
+
+        <span class="kw">return new</span> <span class="cl">FeeResult</span>(totalFee, rate, tx.amount().subtract(totalFee));
+    }
+}
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ SECTION 10 : STACK COMPLÈTE ══ -->
+<section id="stack">
+  <div class="wrap">
+    <div class="section-eyebrow ey-v">10 · Stack Technologique Complète</div>
+    <h2 class="sh">Chaque technologie, son rôle exact</h2>
+
+    <div class="btable-wrap">
+      <table class="btable">
+        <thead>
+          <tr>
+            <th>Couche</th>
+            <th>Technologie</th>
+            <th>Rôle dans la plateforme PSP</th>
+            <th>Pourquoi ce choix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4" style="background:var(--violet-dim);color:#a78bfa;font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">BACKEND</td></tr>
+          <tr><td>Backend Framework</td><td><span class="two-badge">Spring Boot 3.x</span></td><td>Socle de tous les microservices — REST APIs, scheduling, events</td><td>Ecosystème mûr, intégration native Kafka/Redis/JPA</td></tr>
+          <tr><td>Language</td><td><span class="two-badge">Java 21</span></td><td>Virtual threads (Project Loom) pour haute concurrence</td><td>Virtual threads = throughput ×3 sur I/O bound (paiements)</td></tr>
+          <tr><td>API Gateway</td><td><span class="two-badge">Spring Cloud Gateway</span> <span class="two-badge">Kong</span></td><td>Routing, auth, rate limiting, load balancing</td><td>Kong pour features enterprise (plugins, analytics)</td></tr>
+          <tr><td>Auth</td><td><span class="two-badge">Keycloak</span> <span class="two-badge">OAuth2/OIDC</span> <span class="two-badge">JWT</span></td><td>SSO marchands, API keys partenaires, sessions admin</td><td>Standard industriel, RBAC avancé, audit login</td></tr>
+          <tr><td>Service Discovery</td><td><span class="two-badge">Kubernetes DNS</span> <span class="two-badge">Spring Cloud</span></td><td>Les services se trouvent mutuellement dans le cluster</td><td>K8s DNS natif évite un Consul séparé</td></tr>
+          <tr><td>Résilience</td><td><span class="two-badge">Resilience4j</span></td><td>Circuit Breaker vers acquéreurs, Retry, Rate Limiter</td><td>Si CMI est lent, on coupe les appels pour protéger l'app</td></tr>
+          <tr><td>Transactions dist.</td><td><span class="two-badge">Saga Pattern</span> <span class="two-badge">Outbox Pattern</span></td><td>Atomicité paiement sans 2PC distribué</td><td>2PC impossible en microservices — Saga + compensation</td></tr>
+          <tr><td colspan="4" style="background:var(--emerald-dim);color:var(--emerald);font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">DATA</td></tr>
+          <tr><td>Base transactionnelle</td><td><span class="two-badge">PostgreSQL 16</span></td><td>Transactions, ledger, marchands, KYC — ACID garanti</td><td>ACID, JSON support, extensions (TimescaleDB)</td></tr>
+          <tr><td>Cache & Sessions</td><td><span class="two-badge">Redis Cluster</span></td><td>Idempotency keys, sessions, rate limiting, pub/sub real-time</td><td>Sub-milliseconde, TTL natif, Pub/Sub pour WebSocket</td></tr>
+          <tr><td>Analytics temps réel</td><td><span class="two-badge">TimescaleDB</span></td><td>Métriques dashboard marchand, agrégations sur fenêtres temps</td><td>Extension PostgreSQL — requêtes time-series 10-100× plus rapides</td></tr>
+          <tr><td>Search & Logs</td><td><span class="two-badge">Elasticsearch</span></td><td>Recherche transactions, audit trail, logs applicatifs</td><td>Full-text search milliardaire en millisecondes</td></tr>
+          <tr><td>Object Storage</td><td><span class="two-badge">MinIO</span> <span class="two-badge">AWS S3</span></td><td>Documents KYC, exports PDF/Excel, fichiers de rapprochement</td><td>MinIO self-hosted (conformité données locales)</td></tr>
+          <tr><td>Secrets</td><td><span class="two-badge">HashiCorp Vault</span></td><td>Clés chiffrement, tokens API, certificats, credentials DB</td><td>Rotation automatique secrets, audit accès clés</td></tr>
+          <tr><td colspan="4" style="background:var(--amber-dim);color:var(--amber);font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">MESSAGING</td></tr>
+          <tr><td>Event Bus</td><td><span class="two-badge">Apache Kafka</span></td><td>Tous les événements inter-services (payment.created, fraud.flagged…)</td><td>Durabilité, replay events, Kafka Streams pour processing</td></tr>
+          <tr><td>Schema Registry</td><td><span class="two-badge">Confluent Schema Registry</span></td><td>Contrats Avro entre producteurs et consommateurs</td><td>Évolution schémas sans casser les consumers</td></tr>
+          <tr><td>Stream Processing</td><td><span class="two-badge">Kafka Streams</span></td><td>Calcul vélocité fraude, agrégations temps réel, windowed counts</td><td>Stateful processing sans infrastructure séparée</td></tr>
+          <tr><td colspan="4" style="background:var(--cyan-dim);color:var(--cyan);font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">FRONTEND</td></tr>
+          <tr><td>Cockpit Marchand</td><td><span class="two-badge">Next.js 14</span> <span class="two-badge">TypeScript</span></td><td>Dashboard, rapports, exports, réconciliation</td><td>SSR pour perf, App Router, TypeScript pour fiabilité</td></tr>
+          <tr><td>App Mobile</td><td><span class="two-badge">React Native</span> <span class="two-badge">Expo</span></td><td>App marchand iOS/Android — notifications, QR display</td><td>Code partagé iOS/Android, Expo OTA updates</td></tr>
+          <tr><td>Composants UI</td><td><span class="two-badge">Shadcn/UI</span> <span class="two-badge">Tailwind</span></td><td>Design system cohérent cockpit marchand</td><td>Accessible, customisable, pas de dépendance NPM lourde</td></tr>
+          <tr><td>Graphiques</td><td><span class="two-badge">Recharts</span> <span class="two-badge">Tremor</span></td><td>Courbes transactions, histogrammes volumes, KPIs visuels</td><td>Recharts = flexible; Tremor = composants dashboard prêts</td></tr>
+          <tr><td colspan="4" style="background:var(--rose-dim);color:var(--rose);font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">OBSERVABILITÉ</td></tr>
+          <tr><td>Métriques</td><td><span class="two-badge">Micrometer</span> <span class="two-badge">Prometheus</span></td><td>TPM, taux succès, latences, JVM, DB pool</td><td>Micrometer = façade vendor-neutral sur Prometheus</td></tr>
+          <tr><td>Dashboards</td><td><span class="two-badge">Grafana</span></td><td>Dashboard ops + business + SLO tracking</td><td>Standard industrie, alerting intégré, Loki pour logs</td></tr>
+          <tr><td>Tracing</td><td><span class="two-badge">OpenTelemetry</span> <span class="two-badge">Jaeger</span></td><td>Trace d'un paiement à travers tous les services</td><td>OTel = standard universel, Jaeger = UI tracing gratuit</td></tr>
+          <tr><td>Logs centralisés</td><td><span class="two-badge">ELK Stack</span> <span class="two-badge">Loki</span></td><td>Recherche logs, audit PCI, compliance, debugging</td><td>ELK = puissant; Loki = alternatif léger si RAM limitée</td></tr>
+          <tr><td colspan="4" style="background:rgba(99,102,241,0.07);color:#818cf8;font-family:'Fira Code',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.5rem 1.25rem;">INFRA & SÉCURITÉ</td></tr>
+          <tr><td>Orchestration</td><td><span class="two-badge">Kubernetes</span> <span class="two-badge">Helm</span></td><td>Déploiement, scaling automatique, HA multi-node</td><td>Standard cloud-native, HPA scaling sur TPM</td></tr>
+          <tr><td>CI/CD</td><td><span class="two-badge">GitHub Actions</span> <span class="two-badge">ArgoCD</span></td><td>Build, test, scan, deploy automatisé</td><td>ArgoCD = GitOps — l'état du cluster = état du Git</td></tr>
+          <tr><td>Chiffrement</td><td><span class="two-badge">TLS 1.3</span> <span class="two-badge">mTLS</span> <span class="two-badge">AES-256</span></td><td>TLS externe, mTLS inter-services, AES données au repos</td><td>PCI-DSS exige chiffrement en transit et au repos</td></tr>
+          <tr><td>Sécurité code</td><td><span class="two-badge">SonarQube</span> <span class="two-badge">OWASP</span> <span class="two-badge">Trivy</span></td><td>Analyse statique code + vulnérabilités images Docker</td><td>Trivy intégré CI/CD — bloque deploy si CVE critique</td></tr>
+          <tr><td>Service Mesh</td><td><span class="two-badge">Istio</span> (optionnel)</td><td>mTLS automatique, traffic management, observabilité L7</td><td>Ajouter en phase 2 si complexité microservices croît</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="wrap">
+    <p><strong>FinTech PSP · Afrique du Nord</strong> — Architecture Technique Complète</p>
+    <p style="margin-top:0.5rem">Spring Boot · Kafka · PostgreSQL · Redis · Kubernetes · ELK · Prometheus · Grafana</p>
+    <p style="margin-top:0.5rem;font-size:0.72rem;color:var(--text3)">PCI-DSS · KYC/KYB · AML · Réglementations BAM / Banque d'Algérie / BCT</p>
+  </div>
+</footer>
+
+</body>
+</html>
